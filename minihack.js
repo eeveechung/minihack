@@ -23,13 +23,9 @@ $(function() {   // when document is ready
 		console.log("Clicked");
 		$("#comparison").html("");
 		var phraseEntry = $("#phraseEntry").val();
-		// $("#choices").html("POOP");
 		getSearchItem(phraseEntry);
 		console.log("searched");
 	});
-		
-		// return false;
-		console.log("what");
 } );
 
 //application id -- f531e2ed
@@ -41,7 +37,7 @@ $(function() {   // when document is ready
 function getSearchItem(phraseEntry) {
 	console.log("in getSearchItem()");
 	var url = "https://api.nutritionix.com/v1_1/search/";
-	var phrase = phraseEntry;
+	phrase = phraseEntry;
 	var lower_range = 0;
 	var upper_range = 10
 	var numResults = "?results="+lower_range+"%3A"+upper_range; //searches 
@@ -68,17 +64,24 @@ function getSearchItem(phraseEntry) {
 
 //parses the responseText from search of phraseEntry into 10 items shown on page
 function showSearchResults(response) {
-	resultHTML = "";
-	$.each(response.hits, function(key, value){
-		var item = value.fields;
-		var button = "<button type='button' class='foodChoice'";
-		button += "id="+item.item_id;
-		button += " onclick='getCalories(this.id)' >";
-		button += item.item_name;
-		button += "</button>";
-		console.log(key + ": " + item.item_name);
-		resultHTML += button + "<br><br>";
-	});
+	resultHTML = ""
+	if (response.hits.length == 0){
+		resultHTML += "'"+phrase + "' has 0 results in the database. Please try again. "
+	}
+	else{
+		resultHTML += "<p>Select an option below</p>";
+		$.each(response.hits, function(key, value){
+			var item = value.fields;
+			var button = "<button type='button' class='foodChoice'";
+			button += "id="+item.item_id;
+			button += " onclick='getCalories(this.id)' >";
+			button += item.item_name;
+			button += "</button>";
+			console.log(key + ": " + item.item_name);
+			resultHTML += button + "<br><br>";
+		});
+	}
+	
 	return resultHTML;
 }
 
